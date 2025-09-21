@@ -17,6 +17,7 @@ export interface Auth {
 }
 
 export interface Toast {
+    id: string;
     status: 'success' | 'warning' | 'error' | 'info';
     message: string;
 }

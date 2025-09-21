@@ -5,7 +5,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { Toaster } from "@/components/ui/sonner";
 import { BreadcrumbItem, SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 interface AppLayoutProps {
@@ -15,11 +15,12 @@ interface AppLayoutProps {
 
 export default function AppLayout({ breadcrumbs=[], children }: AppLayoutProps) {
     const { toast: toastData } = usePage<SharedData>().props;
+    const shownToast = useRef<Set<string>>(new Set());
 
     useEffect(() => {
-        if (!toastData) return;
+        if (!toastData || shownToast.current.has(toastData.id)) return;
         
-        const { status, message } = toastData;
+        const { id, status, message } = toastData;
         const toastMethods = {
             info: toast.info,
             success: toast.success,
@@ -29,6 +30,8 @@ export default function AppLayout({ breadcrumbs=[], children }: AppLayoutProps) 
         const toastFn = toastMethods[status] || toast;
 
         toastFn(message);
+
+        shownToast.current.add(id);
     }, [toastData]);
 
     return (
