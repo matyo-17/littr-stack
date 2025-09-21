@@ -51,7 +51,7 @@ export default function Index({ roles }: UserIndexProps) {
                 columns={columns}
                 endpoint={endpoints.datatable}
                 render={render}
-                sort="group"
+                sort="email"
                 direction="asc"
                 perPage={10}
             />
