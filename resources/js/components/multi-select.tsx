@@ -1131,6 +1131,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
 											return (
 												<CommandItem
 													key={option.value}
+													value={option.label}
 													onSelect={() => toggleOption(option.value)}
 													role="option"
 													aria-selected={isSelected}
@@ -1142,7 +1143,8 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
 														"cursor-pointer",
 														option.disabled && "opacity-50 cursor-not-allowed"
 													)}
-													disabled={option.disabled}>
+													disabled={option.disabled}
+												>
 													<div
 														className={cn(
 															"mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
