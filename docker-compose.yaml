@@ -3,9 +3,41 @@ services:
     build:
       context: .
       dockerfile: ./docker/php/Dockerfile
+    environment:
+      CONTAINER_ROLE: app
     ports:
       - 5173:5173
       - 9000:9000
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - default
+
+  queue:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    environment:
+      CONTAINER_ROLE: queue
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - default
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    environment:
+      CONTAINER_ROLE: scheduler
+    restart: unless-stopped
     volumes:
       - ./:/var/www/html
     depends_on:
@@ -46,6 +78,20 @@ services:
     networks:
       - default
 
+  mailpit:
+    image: axllent/mailpit:v1.28.0
+    ports:
+      - 1025:1025
+      - 8025:8025
+    environment:
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    volumes:
+      - mailpit-data:/data
+    networks:
+      - default
+
   phpmyadmin:
     image: phpmyadmin:5.2.3
     ports:
@@ -64,6 +110,8 @@ volumes:
   mysql-data:
     driver: local
   redis-data:
+    driver: local
+  mailpit-data:
     driver: local
 
 networks:
